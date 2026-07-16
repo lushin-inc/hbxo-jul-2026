@@ -1,373 +1,279 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Hubexo — Where Each Team Stands</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hubexo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --navy:#0b2545;
-  --navy-2:#123a6b;
-  --blue:#2f6fd0;
-  --blue-lt:#eaf1fc;
-  --gold:#e0a526;
-  --green:#1f8a5f;
-  --green-lt:#e6f4ee;
-  --red:#c0392b;
-  --red-lt:#fbebe9;
-  --amber:#b8791a;
-  --amber-lt:#fdf3e3;
-  --slate:#5b6b80;
-  --line:#e3e8ef;
-  --bg:#f5f7fa;
+  --paper:#fbfaf8;
+  --ink:#14161a;
+  --graphite-1:#272c33;
+  --graphite-2:#464e59;
+  --ahead-1:#12805e;  --ahead-2:#1fa97a;  --ahead-g:18,128,94;
+  --track-1:#1e4fa3;  --track-2:#2f6fd0;  --track-g:30,79,163;
+  --behind-1:#a32e28; --behind-2:#c9483a; --behind-g:163,46,40;
+  --gold:#ffc53d;
+  --hair:rgba(20,22,26,.13);
+  --muted:#7c8085;
+  --sans:'Inter Tight',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+  --ease:cubic-bezier(.4,0,.2,1);
 }
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:'Poppins',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--navy);-webkit-font-smoothing:antialiased}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+.wrap{max-width:1180px;margin:0 auto;padding:38px 24px 90px}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;border-radius:4px}
 
-/* ---------- SIDEBAR ---------- */
-#sidebar{position:fixed;top:0;left:0;width:250px;height:100vh;background:var(--navy);color:#fff;padding:26px 16px;transition:width .22s ease;overflow:hidden;z-index:50}
-#sidebar.collapsed{width:66px}
-.brand{display:flex;align-items:center;gap:10px;margin-bottom:28px;white-space:nowrap}
-.brand-mark{min-width:34px;height:34px;border-radius:9px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-weight:700;color:var(--navy);font-size:15px}
-.brand-text{font-weight:600;font-size:15px;letter-spacing:.2px}
-#sidebar.collapsed .brand-text,#sidebar.collapsed .navlabel{opacity:0;pointer-events:none}
-.navlink{display:flex;align-items:center;gap:13px;padding:13px 12px;border-radius:10px;color:#c7d6ea;text-decoration:none;font-size:14.5px;font-weight:500;margin-bottom:5px;white-space:nowrap;transition:background .15s,color .15s}
-.navlink:hover{background:rgba(255,255,255,.09);color:#fff}
-.navlink.active{background:var(--blue);color:#fff}
-.navlink svg{min-width:20px}
-.navlabel{transition:opacity .15s}
-#toggle{position:absolute;bottom:22px;left:16px;background:rgba(255,255,255,.1);border:0;color:#c7d6ea;width:34px;height:34px;border-radius:9px;cursor:pointer;display:flex;align-items:center;justify-content:center}
-#toggle:hover{background:rgba(255,255,255,.2);color:#fff}
+/* ── filter rail ─────────────────────────────── */
+.rail{display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.eyebrow{font-family:var(--mono);font-size:9.5px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);margin-right:4px}
+.f{font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;padding:9px 15px;border:1px solid var(--hair);background:transparent;border-radius:999px;cursor:pointer;color:var(--muted);transition:all .18s var(--ease)}
+.f+.f{margin-left:5px}
+.f:hover{color:var(--ink);border-color:rgba(20,22,26,.34)}
+.f.on{color:#fff;border-color:transparent;transform:translateY(-1px)}
+.f.on[data-lead]{background:var(--ink);box-shadow:0 6px 16px -6px rgba(20,22,26,.5)}
+.f.on[data-stat=ahead]{background:var(--ahead-1);box-shadow:0 6px 16px -6px rgba(var(--ahead-g),.7)}
+.f.on[data-stat=track]{background:var(--track-1);box-shadow:0 6px 16px -6px rgba(var(--track-g),.7)}
+.f.on[data-stat=behind]{background:var(--behind-1);box-shadow:0 6px 16px -6px rgba(var(--behind-g),.7)}
+.f.on[data-ess]{background:var(--gold);color:var(--ink);box-shadow:0 6px 16px -6px rgba(255,197,61,.85)}
+.div{width:1px;height:18px;background:var(--hair);margin:0 8px}
+.tally{margin-left:auto;font-family:var(--mono);font-size:10.5px;font-weight:500;color:var(--muted);letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.tally b{color:var(--ink);font-weight:600}
 
-/* ---------- LAYOUT ---------- */
-#main{margin-left:250px;padding:34px 40px 70px;transition:margin-left .22s ease}
-#main.wide{margin-left:66px}
-h1{font-size:21px;font-weight:600;color:var(--navy-2);margin-bottom:22px}
-h2{font-size:16px;font-weight:600;margin:34px 0 14px}
+/* ── tree ────────────────────────────────────── */
+.tree{margin-top:52px}
+.crown{display:flex;justify-content:center}
+.kyle{background:linear-gradient(158deg,var(--ink),#31363f);color:#fff;border-radius:13px;padding:15px 52px;text-align:center;box-shadow:0 14px 30px -14px rgba(20,22,26,.6)}
+.kyle .n{font-size:21px;font-weight:700;letter-spacing:-.02em}
+.kyle .r{font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.18em;text-transform:uppercase;opacity:.5;margin-top:3px}
+.stem{height:24px;width:1px;background:var(--hair);margin:0 auto}
+.branch{height:1px;background:var(--hair);width:66.66%;margin:0 auto;transform-origin:center;transition:opacity .3s var(--ease)}
 
-/* ---------- SCOREBOARD ---------- */
-.score{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:16px;margin-bottom:12px}
-.score-card{border-radius:16px;padding:22px;color:#fff;cursor:pointer;border:0;text-align:left;font-family:inherit;transition:transform .15s}
-.score-card:hover{transform:translateY(-3px)}
-.score-card.on{outline:3px solid var(--navy);outline-offset:3px}
-.score-num{font-size:38px;font-weight:700;line-height:1}
-.score-lbl{font-size:14px;font-weight:500;margin-top:6px;opacity:.95}
-.s-ahead{background:linear-gradient(135deg,#1f8a5f,#2fb37c);box-shadow:0 8px 22px rgba(31,138,95,.3)}
-.s-track{background:linear-gradient(135deg,#2f6fd0,#5a95e8);box-shadow:0 8px 22px rgba(47,111,208,.3)}
-.s-behind{background:linear-gradient(135deg,#c0392b,#e0574a);box-shadow:0 8px 22px rgba(192,57,43,.3)}
-.s-ramp{background:linear-gradient(135deg,#b8791a,#e0a526);box-shadow:0 8px 22px rgba(184,121,26,.3)}
+.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.col{display:flex;flex-direction:column}
+.riser{height:24px;width:1px;background:var(--hair);margin:0 auto;transition:opacity .3s var(--ease)}
+.lead{background:linear-gradient(158deg,var(--graphite-1),var(--graphite-2));color:#fff;border:0;width:100%;border-radius:11px;padding:14px 0;font-family:var(--sans);font-size:16.5px;font-weight:600;letter-spacing:-.01em;cursor:pointer;box-shadow:0 10px 24px -14px rgba(20,22,26,.7);transition:transform .18s var(--ease),opacity .28s var(--ease),filter .28s var(--ease)}
+.lead:hover{transform:translateY(-2px)}
+.lead .s{color:var(--gold);font-size:12px;margin-left:3px}
+.stack{display:flex;flex-direction:column;gap:13px;margin-top:15px}
 
-/* ---------- FILTERS ---------- */
-.filters{background:#fff;border-radius:14px;padding:18px;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;margin-bottom:24px}
-.fgroup{display:flex;flex-direction:column;gap:6px}
-.fgroup label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;color:var(--slate)}
-select{font-family:inherit;font-size:14px;font-weight:500;padding:11px 14px;border:1.5px solid var(--line);border-radius:9px;background:#fff;color:var(--navy);min-width:190px;cursor:pointer}
-select:focus{outline:none;border-color:var(--blue)}
-.toggle{display:flex;align-items:center;gap:9px;background:var(--blue-lt);border:1.5px solid transparent;border-radius:9px;padding:11px 15px;cursor:pointer;font-size:14px;font-weight:500;user-select:none}
-.toggle.on{background:var(--navy);color:#fff}
-.toggle input{width:16px;height:16px;accent-color:var(--gold);cursor:pointer}
-.clear{margin-left:auto;background:none;border:0;color:var(--blue);font-family:inherit;font-size:13.5px;font-weight:600;cursor:pointer;padding:11px 4px}
+/* ── team blocks: colour = status, nothing else ── */
+.grp{border-radius:16px;padding:15px;cursor:pointer;border:0;text-align:left;width:100%;font-family:var(--sans);
+     transition:transform .2s var(--ease),opacity .28s var(--ease),filter .28s var(--ease),box-shadow .2s var(--ease)}
+.grp:hover{transform:translateY(-2px)}
+.grp.ahead {background:linear-gradient(158deg,var(--ahead-1),var(--ahead-2));  box-shadow:0 16px 34px -16px rgba(var(--ahead-g),.75)}
+.grp.track {background:linear-gradient(158deg,var(--track-1),var(--track-2));  box-shadow:0 16px 34px -16px rgba(var(--track-g),.7)}
+.grp.behind{background:linear-gradient(158deg,var(--behind-1),var(--behind-2));box-shadow:0 16px 34px -16px rgba(var(--behind-g),.7)}
+.gh{display:flex;align-items:baseline;gap:10px;margin-bottom:12px;padding:0 3px}
+.gn{font-family:var(--mono);font-size:10px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:#fff;flex:1}
+.gm{font-family:var(--mono);font-size:10px;font-weight:400;color:rgba(255,255,255,.6);white-space:nowrap;font-variant-numeric:tabular-nums}
+.ppl{display:flex;flex-direction:column;gap:4px}
+.node{display:flex;align-items:center;gap:7px;padding:9px 11px;border-radius:8px;background:rgba(255,255,255,.13);
+      font-size:13.5px;font-weight:500;letter-spacing:-.005em;color:#fff;
+      transition:background .16s var(--ease),opacity .24s var(--ease)}
+.node:hover{background:rgba(255,255,255,.26)}
+.node .nm{flex:1}
+.node .s{color:var(--gold);font-size:11px}
+.off{opacity:.15;filter:saturate(.1);transform:scale(.985)}
+.node.off{opacity:.16;filter:none;transform:none}
+.branch.off,.riser.off{opacity:.2}
 
-/* ---------- TEAM CARDS ---------- */
-.teams{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px}
-.team{background:#fff;border-radius:16px;padding:24px;border-left:7px solid var(--slate)}
-.team.ahead{border-left-color:var(--green)}
-.team.behind{border-left-color:var(--red)}
-.team.track{border-left-color:var(--blue)}
-.team.ramp{border-left-color:var(--amber)}
-.team-top{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:4px}
-.team-name{font-size:19px;font-weight:600}
-.team-lead{font-size:13.5px;color:var(--slate);font-weight:500}
-.pill{font-size:11px;font-weight:700;letter-spacing:.7px;text-transform:uppercase;padding:6px 12px;border-radius:20px;white-space:nowrap}
-.p-ahead{background:var(--green-lt);color:var(--green)}
-.p-behind{background:var(--red-lt);color:var(--red)}
-.p-track{background:var(--blue-lt);color:var(--blue)}
-.p-ramp{background:var(--amber-lt);color:var(--amber)}
-.metric{background:var(--bg);border-radius:10px;padding:13px 15px;margin:16px 0 14px}
-.metric-num{font-size:23px;font-weight:700}
-.metric-sub{font-size:12.5px;color:var(--slate);font-weight:500;margin-top:2px}
-.evidence{list-style:none;display:flex;flex-direction:column;gap:9px}
-.evidence li{font-size:14px;line-height:1.5;padding-left:16px;position:relative;color:#33465e}
-.evidence li:before{content:"";position:absolute;left:0;top:8px;width:6px;height:6px;border-radius:50%;background:var(--blue)}
-.evidence b{color:var(--navy)}
-.roster{margin-top:18px;padding-top:16px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:7px}
-.chip{font-size:12.5px;font-weight:500;padding:6px 11px;border-radius:8px;background:var(--bg);color:#33465e;display:flex;align-items:center;gap:6px}
-.chip.ess{background:var(--blue-lt);color:var(--navy-2)}
-.dot{width:7px;height:7px;border-radius:50%;background:var(--slate)}
-.dot.ahead{background:var(--green)}
-.dot.behind{background:var(--red)}
-.dot.ramp{background:var(--amber)}
-.dot.track{background:var(--blue)}
-.star{color:var(--gold);font-size:11px}
-.empty{background:#fff;border-radius:16px;padding:50px;text-align:center;color:var(--slate);font-size:15px}
-.legend{display:flex;flex-wrap:wrap;gap:18px;margin-top:26px;font-size:13px;color:var(--slate)}
-.legend span{display:flex;align-items:center;gap:7px}
-@media(max-width:820px){#sidebar{width:66px}#sidebar .brand-text,#sidebar .navlabel{opacity:0}#main{margin-left:66px;padding:24px 18px 60px}}
+/* ── tooltip ─────────────────────────────────── */
+#tip{position:fixed;z-index:99;pointer-events:none;opacity:0;transform:translateY(3px);
+     transition:opacity .14s var(--ease),transform .14s var(--ease);
+     background:var(--ink);color:#fff;font-size:12px;font-weight:400;line-height:1.45;
+     padding:8px 11px;border-radius:7px;max-width:230px;box-shadow:0 10px 26px -8px rgba(20,22,26,.55)}
+#tip.show{opacity:1;transform:translateY(0)}
+
+/* ── entrance ────────────────────────────────── */
+@keyframes rise{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:none}}
+.anim{opacity:0;animation:rise .5s var(--ease) forwards}
+@media(max-width:880px){.cols{grid-template-columns:1fr;gap:26px}.branch{display:none}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.anim{opacity:1}}
 </style>
 </head>
 <body>
+<div class="wrap">
 
-<nav id="sidebar">
-  <div class="brand"><div class="brand-mark">L</div><div class="brand-text">Hubexo × Lushin</div></div>
-  <a class="navlink active" href="index.html">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
-    <span class="navlabel">Where teams stand</span></a>
-  <a class="navlink" href="sessions/essentials.html">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    <span class="navlabel">Essentials schedule</span></a>
-  <a class="navlink" href="sessions/kam-sprint.html">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/></svg>
-    <span class="navlabel">Craig — KAM sprint</span></a>
-  <button id="toggle" aria-label="Collapse navigation">
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
-  </button>
-</nav>
-
-<div id="main">
-  <h1>Where each team stands</h1>
-
-  <div class="score" id="score"></div>
-
-  <div class="filters">
-    <div class="fgroup"><label for="fLeader">Leader</label>
-      <select id="fLeader"><option value="">All leaders</option></select></div>
-    <div class="fgroup"><label for="fTeam">Team</label>
-      <select id="fTeam"><option value="">All teams</option></select></div>
-    <div class="fgroup"><label for="fStatus">Status</label>
-      <select id="fStatus">
-        <option value="">Ahead and behind</option>
-        <option value="ahead">Ahead</option>
-        <option value="track">On track</option>
-        <option value="behind">Behind</option>
-        <option value="ramp">Ramping</option>
-      </select></div>
-    <label class="toggle" id="essWrap"><input type="checkbox" id="fEss"> In Essentials now</label>
-    <button class="clear" id="clear">Reset filters</button>
+  <div class="rail">
+    <span class="eyebrow">Leader</span><span id="fLead"></span>
+    <span class="div"></span>
+    <span class="eyebrow">Status</span><span id="fStat"></span>
+    <span class="div"></span>
+    <button class="f" data-ess="1">★ Essentials</button>
+    <span class="tally" id="tally"></span>
   </div>
 
-  <div class="teams" id="teams"></div>
-
-  <div class="legend">
-    <span><span class="dot ahead"></span> Ahead of plan</span>
-    <span><span class="dot track"></span> On track</span>
-    <span><span class="dot behind"></span> Behind plan</span>
-    <span><span class="dot ramp"></span> Ramping or blocked</span>
-    <span><span class="star">★</span> In Essentials now</span>
+  <div class="tree">
+    <div class="crown"><div class="kyle anim"><div class="n">Kyle</div><div class="r">President</div></div></div>
+    <div class="stem anim" style="animation-delay:.1s"></div>
+    <div class="branch anim" id="branch" style="animation-delay:.15s"></div>
+    <div class="cols" id="cols"></div>
   </div>
+
 </div>
+<div id="tip"></div>
 
 <script>
-/* =========================================================================
-   ADD OR EDIT A TEAM: add one object to this array. Nothing else to change.
-   status: 'ahead' | 'track' | 'behind' | 'ramp'
-   people: { n: name, s: status, ess: true if in Essentials, note: coaching note }
-   ========================================================================= */
-const TEAMS = [
- {
-  team:"Key Accounts (KAM)", leader:"Craig Fuss", status:"ahead",
-  metric:"200% of goal", metricSub:"$500K+ in upsells last month against a $110K monthly target",
-  evidence:[
-    "Craig's group <b>outperformed every other team</b> last month, carried by familiar products and one deal close to $100K.",
-    "Upsell focus is set: <b>Monitor and Construction Wire</b> first. Quest and Pantera carry higher barriers.",
-    "The constraint is cross-product selling — product experts still hold the accounts instead of handing reps the reins.",
-    "Four-session sprint starts next Wednesday to fix outreach confidence."
-  ],
-  people:[
-    {n:"Jon Kane", s:"ahead", note:"$90K closed in two months against a $30K monthly target. Only rep with a real referral network."},
-    {n:"Susan Young", s:"track", note:"Monitor expert. In the sprint."},
-    {n:"Kayla Shabahz", s:"track", note:"Quest expert. In the sprint."},
-    {n:"Nicole Leclair", s:"ramp", note:"New and energetic, least experienced. In the sprint — needs urgency and outreach confidence."},
-    {n:"Kevin Drake", s:"ramp", note:"API product lead. Moving to self-directed selling: $12.5K monthly target, 10% commission."},
-    {n:"Nicole Crader", s:"ramp", ess:true, note:"Active prospecting ramp-up underway with Alex."}
-  ]
- },
- {
-  team:"Enterprise / Reseller", leader:"Craig Fuss", status:"ahead",
-  metric:"$155K closed", metricSub:"$240K goal — plus $120K, $40K and $24K in late-stage pipeline",
-  evidence:[
-    "<b>John Burns closed at $155K</b> with renewal upside. Advent Health at $120K is through security and sitting in legal redlines.",
-    "Reseller deals with <b>Calibrate ($40K) and Sitewise ($24K)</b> are live; Walmart is in final legal.",
-    "Real drag is internal: a new sales-data approval process and slow CRO responses are stalling signatures.",
-    "Lead generation is the soft spot — the pipeline is strong at the top of the list and thin behind it."
-  ],
-  people:[
-    {n:"Alex Deloach", s:"ahead", note:"Carrying the number. Needs air cover on the approval red tape and the Walmart legal thread."},
-    {n:"Salesperson 1 (Sarah)", s:"ramp", note:"Coaching on pipeline building, upfront contracts, clear next steps. Confidence still building."},
-    {n:"Salesperson 2", s:"ramp", note:"Onboarding."}
-  ]
- },
- {
-  team:"Contractors Mid Market", leader:"Harry", status:"ahead",
-  metric:"Momentum building", metricSub:"Early closes and the first referral wins are landing",
-  evidence:[
-    "<b>Devon Semler is closing deals early</b> in his ramp; Sabrina Brackett landed referral success.",
-    "Team adopted the CAPS framework and the <b>five-minute placeholder meeting</b> after demos to cut ghosting.",
-    "Open issue: the <b>90-day client handover</b> to success teams isn't clear, so reps drop engagement post-sale.",
-    "Shift underway from chasing referral outcomes to a consistent monthly ask."
-  ],
-  people:[
-    {n:"Devon Semler", s:"ahead", ess:true, note:"Closing early. Missed the first two Essentials sessions — recordings sent."},
-    {n:"Sabrina Brackett", s:"ahead", ess:true, note:"Referral success. Working trial-to-commitment trade-offs."},
-    {n:"Joseph Shelton", s:"track", ess:true, note:"Documenting pre-demo qualification questions and objections."},
-    {n:"Michael Ciccarelli", s:"track", ess:true, note:"Steady."},
-    {n:"Nicole Speck", s:"track", ess:true, note:"Steady."}
-  ]
- },
- {
-  team:"AE Strategic (NBS / Latira)", leader:"Darren Kerr", status:"track",
-  metric:"~200 AIA leads", metricSub:"$27K monthly target — conversion speed is the whole game",
-  evidence:[
-    "About <b>200 leads engaged at AIA</b> with first meetings booked. The job now is converting them fast.",
-    "Pipeline stages were standardized and milestone criteria defined, which removed a lot of forecast ambiguity.",
-    "Strategy is a <b>30-day cycle on smaller firms</b> (11–50 employees) instead of the usual 90–120 days.",
-    "Latira is the risk: strong product, weak US architect adoption — 100 US projects in three years against 60,000 global users."
-  ],
-  people:[
-    {n:"Mark Barretto", s:"track", ess:true, note:"Owns pipeline stages and the ROI calculator in demos. Needs upfront-contract reps."},
-    {n:"Brittany Moss", s:"track", ess:true, note:"Working a demo held for leadership review. Documenting 'end if not yes' objections."},
-    {n:"Josh Struletz", s:"ramp", ess:true, note:"Ramping on AIA warm leads and internal product knowledge."}
-  ]
- },
- {
-  team:"Strategic Contractors", leader:"Darren Kerr", status:"behind",
-  metric:"$26K pipeline", metricSub:"Down from a normal $120K–$150K",
-  evidence:[
-    "Pipeline collapsed from <b>$120K–$150K to roughly $26K</b>. Inbound dried up and monthly sales are following it down.",
-    "Reps built for warm inbound are being pushed into cold outbound — cycles stretch, confidence drops.",
-    "<b>CRM data quality</b> is blocking prospecting; reps burn hours verifying leads by hand.",
-    "ICP confusion after the role changes means reps aren't sure who to target.",
-    "Team dynamics are still good — they're supporting each other and waiting on leadership to move on lead flow."
-  ],
-  people:[
-    {n:"Greg Madia", s:"behind", note:"Calling the top 100 despite messaging problems. ZoomInfo export broken before subscription expiry."},
-    {n:"Joshua Puvogel", s:"track", ess:true, note:"Custom cold outreach with tailored emails, documenting responses. Working the tech-stack training."},
-    {n:"Andrew Quintana", s:"ramp", ess:true, note:"ZoomInfo access still not activated."},
-    {n:"Mike Strickland", s:"ramp", ess:true, note:"Surfacing the lead-quality and CRM cleanup issues to Kyle and management."},
-    {n:"Jen Mack", s:"ramp", ess:true, note:"Onboarding. Committed to 250 calls, 50 emails, 50 LinkedIn per week on self-generated leads."},
-    {n:"Glen Jeris", s:"track", note:"No new signal this window."},
-    {n:"Jason Brandschain", s:"track", note:"No new signal this window."}
-  ]
- },
- {
-  team:"Strategic BPM", leader:"Darren Kerr", status:"behind",
-  metric:"Both reps locked out", metricSub:"ZoomInfo access unresolved — outbound can't start",
-  evidence:[
-    "<b>Kevin can't get past login verification and Megan's account expired.</b> The prospecting motion is stalled at the tool.",
-    "ICP is now defined — state-level targeting, NAICS codes, 51–250 employees — but nobody can act on it yet.",
-    "HubSpot integration is down until renewal, so imports risk duplicating existing contacts.",
-    "Once access lands: saved filters, 'Likely to Engage' and Scoops give this team a real trigger-based motion."
-  ],
-  people:[
-    {n:"Kevin Braun", s:"behind", note:"Login verification failing. Hard to engage in training — needs direct coaching on ZoomInfo and email."},
-    {n:"Megan Sanders", s:"behind", note:"Subscription expired, working support. Self-described overthinker — needs volume, not more planning."},
-    {n:"Chip Kappen", s:"track", note:"No new signal this window."}
-  ]
- },
- {
-  team:"Mid Market BPM", leader:"Harry", status:"behind",
-  metric:"72% of leads → 7 reps", metricSub:"Uneven distribution and declining lead quality",
-  evidence:[
-    "<b>72% of leads are going to 7 reps.</b> Workloads are lopsided and quality has dropped — prospects don't respond.",
-    "Recent role changes created ICP confusion; reps are rebuilding target definitions from scratch.",
-    "ZoomInfo and the playbooks are in, DISC and tool training scheduled — the skills are arriving before the leads.",
-    "SPICED rollout is landing globally on top of everything else and needs to be reconciled with Sandler language."
-  ],
-  people:[
-    {n:"Kyle Jacox", s:"track", ess:true, note:"Building quality lists. Working on deeper questions to lift demo-set rate."},
-    {n:"Vince Arbuiso", s:"ramp", ess:true, note:"Redefining ICP around manufacturing after territory changes."},
-    {n:"Kim Lamas", s:"ramp", ess:true, note:"Access issues on shared docs. Needs ZoomInfo follow-up session."},
-    {n:"Marlo Franklin", s:"ramp", ess:true, note:"Commission calculator still hasn't reached her."},
-    {n:"John Mathieu", s:"track", ess:true, note:"Steady."}
-  ]
- },
- {
-  team:"BDR / Outbound build", leader:"Harry", status:"ramp",
-  metric:"Hiring up to 6", metricSub:"Quality over speed — mock calls added to interviews",
-  evidence:[
-    "Hiring <b>up to six proactive reps</b>, screening for culture fit and coachability with mock calls in the interview.",
-    "Lead automation isn't live yet — the plan splits leads by intent and puts low-intent into automated sequences.",
-    "Call volume target ramps toward <b>80–100 dials a day</b> for mid-market and SDR reps.",
-    "Bridge prospect lists are covering Robert and Lance until ZoomInfo is fully implemented."
-  ],
-  people:[
-    {n:"Lance Daughtry", s:"ramp", ess:true, note:"On bridge lists until ZoomInfo lands."},
-    {n:"Robert Scott", s:"ramp", ess:true, note:"On bridge lists. Ran the feedback survey in Essentials."},
-    {n:"Ken Mosier", s:"ramp", ess:true, note:"In Essentials."},
-    {n:"Orion Gallagher", s:"ramp", note:"Darren coaching on next-step discipline and deal qualification."}
-  ]
- }
+/* ═══════════ THE ONLY THING TO EDIT ═══════════
+   Structure per Hubexo_org_chart.xlsx
+   s: 'ahead' | 'track' | 'behind'   — team status, drives the block colour
+   e: 1                              — in Essentials, draws the ★
+   note                              — hover tooltip only, never prints
+   ══════════════════════════════════════════════ */
+const ORG=[
+ {lead:"Darren Kerr", e:1, groups:[
+   {t:"Strategic Contractors", s:"behind", m:"$26K / $150K pipe", p:[
+     {n:"Andrew Quintana",e:1,note:"ZoomInfo access not activated."},
+     {n:"Glen Jeris",note:"No new signal this window."},
+     {n:"Greg Madia",note:"Calling top 100. ZoomInfo export broken."},
+     {n:"Jason Brandschain",note:"No new signal this window."},
+     {n:"Jen Mack",e:1,note:"250 calls / 50 emails / 50 LinkedIn per week."},
+     {n:"Josh Puvogel",e:1,note:"Custom cold outreach, documenting responses."},
+     {n:"Mike Strickland",e:1,note:"Surfacing lead-quality and CRM cleanup issues."}]},
+   {t:"AE Strategic", s:"track", m:"~200 AIA leads", p:[
+     {n:"Brittany Moss",e:1,note:"Demo held for leadership review."},
+     {n:"Josh Struletz",e:1,note:"Working AIA warm leads."},
+     {n:"Mark Barretto",e:1,note:"Owns pipeline stages + ROI calculator in demos."}]},
+   {t:"Strategic BPM", s:"behind", m:"ZoomInfo blocked", p:[
+     {n:"Chip Kappen",note:"No new signal this window."},
+     {n:"Ken Mosier",e:1,note:"In Essentials."},
+     {n:"Kevin Braun",note:"ZoomInfo login verification failing."},
+     {n:"Lance Daughtry",e:1,note:"Bridge lists until ZoomInfo lands."},
+     {n:"Megan Sanders",note:"ZoomInfo subscription expired."},
+     {n:"Orion Gallagher",note:"Darren coaching next-step discipline."},
+     {n:"Robert Scott",e:1,note:"Bridge lists."}]}
+ ]},
+ {lead:"Craig Fuss", groups:[
+   {t:"Key Accounts + Upsells", s:"ahead", m:"200% of goal", p:[
+     {n:"Jon Kane",note:"$90K in two months vs $30K/mo. Only real referral network."},
+     {n:"Kayla Shabahz",note:"Quest expert. In the sprint."},
+     {n:"Kevin Drake",note:"API. $12.5K/mo target, 10% commission."},
+     {n:"Nicole Leclair",note:"New. In the sprint."},
+     {n:"Susan Young",note:"Monitor expert. In the sprint."}]},
+   {t:"Alex Deloach", s:"ahead", m:"$155K closed", p:[
+     {n:"Sarah",note:"Coaching on pipeline + upfront contracts."},
+     {n:"Nicole Crader",e:1,note:"Prospecting ramp-up with Alex."}]}
+ ]},
+ {lead:"Harry", groups:[
+   {t:"Contractors Mid Market", s:"ahead", m:"Momentum", p:[
+     {n:"Devon Semler",e:1,note:"Closing early in ramp."},
+     {n:"Joseph Shelton",e:1,note:"Documenting pre-demo qualification."},
+     {n:"Michael Ciccarelli",e:1,note:"Steady."},
+     {n:"Nicole Speck",e:1,note:"Steady."},
+     {n:"Sabrina Brackett",e:1,note:"Referral success."}]},
+   {t:"Mid Market BPM", s:"behind", m:"72% leads / 7 reps", p:[
+     {n:"John Mathieu",e:1,note:"Steady."},
+     {n:"Kim Lamas",e:1,note:"Access issues. Needs ZoomInfo session."},
+     {n:"Kyle Jacox",e:1,note:"Building quality lists."},
+     {n:"Marlo Franklin",e:1,note:"Commission calculator still not received."},
+     {n:"Vince Arbuiso",e:1,note:"Redefining ICP after territory changes."}]}
+ ]}
 ];
 
-const LBL={ahead:"Ahead",track:"On track",behind:"Behind",ramp:"Ramping"};
 const $=id=>document.getElementById(id);
-const state={leader:"",team:"",status:"",ess:false};
+const S={lead:"",stat:"",team:"",ess:false};
+const STATS=[["ahead","Ahead"],["track","On track"],["behind","Behind"]];
+const esc=t=>(t||'').replace(/"/g,'&quot;');
 
-/* sidebar */
-$('toggle').onclick=()=>{$('sidebar').classList.toggle('collapsed');$('main').classList.toggle('wide');};
+$('fLead').innerHTML=ORG.map(o=>`<button class="f" data-lead="${o.lead}">${o.lead}</button>`).join('');
+$('fStat').innerHTML=STATS.map(([k,v])=>`<button class="f" data-stat="${k}">${v}</button>`).join('');
 
-/* populate selects */
-[...new Set(TEAMS.map(t=>t.leader))].sort().forEach(l=>$('fLeader').add(new Option(l,l)));
-function rebuildTeamSelect(){
-  const cur=state.team;
-  $('fTeam').length=1;
-  TEAMS.filter(t=>!state.leader||t.leader===state.leader).forEach(t=>$('fTeam').add(new Option(t.team,t.team)));
-  $('fTeam').value=[...$('fTeam').options].some(o=>o.value===cur)?cur:(state.team="");
+let d=200;
+$('cols').innerHTML=ORG.map(o=>`
+  <div class="col" data-col="${o.lead}">
+    <div class="riser anim" style="animation-delay:${(d+=40)}ms"></div>
+    <button class="lead anim" data-lead="${o.lead}" data-ess="${o.e?1:0}" style="animation-delay:${d}ms">${o.lead}${o.e?'<span class="s">★</span>':''}</button>
+    <div class="stack">
+      ${o.groups.map(g=>`
+      <div class="grp ${g.s} anim" data-team="${g.t}" data-stat="${g.s}" style="animation-delay:${(d+=55)}ms" tabindex="0">
+        <div class="gh"><span class="gn">${g.t}</span><span class="gm">${g.m}</span></div>
+        <div class="ppl">
+          ${g.p.map(p=>`<div class="node" data-ess="${p.e?1:0}" data-note="${esc(p.note)}">
+            <span class="nm">${p.n}</span>${p.e?'<span class="s">★</span>':''}</div>`).join('')}
+        </div>
+      </div>`).join('')}
+    </div>
+  </div>`).join('');
+
+function apply(){
+  let vis=0,tot=0;
+  document.querySelectorAll('.col').forEach(c=>{
+    const leadOk=!S.lead||c.dataset.col===S.lead;
+    let anyGrp=false;
+    c.querySelectorAll('.grp').forEach(g=>{
+      const ok=leadOk&&(!S.stat||g.dataset.stat===S.stat)&&(!S.team||g.dataset.team===S.team);
+      let anyP=false;
+      g.querySelectorAll('.node').forEach(n=>{
+        tot++;
+        const pOk=ok&&(!S.ess||n.dataset.ess==='1');
+        n.classList.toggle('off',!pOk);
+        if(pOk){anyP=true;vis++}
+      });
+      const gOk=ok&&anyP;
+      g.classList.toggle('off',!gOk);
+      if(gOk)anyGrp=true;
+    });
+    const L=c.querySelector('.lead');
+    tot++;
+    const lOk=S.ess?(leadOk&&L.dataset.ess==='1'&&!S.stat&&!S.team):(leadOk&&anyGrp);
+    if(lOk)vis++;
+    L.classList.toggle('off',!lOk);
+    c.querySelector('.riser').classList.toggle('off',!leadOk||!anyGrp);
+  });
+  document.querySelectorAll('.f').forEach(b=>{
+    if(b.dataset.lead)b.classList.toggle('on',S.lead===b.dataset.lead);
+    if(b.dataset.stat)b.classList.toggle('on',S.stat===b.dataset.stat);
+    if(b.dataset.ess)b.classList.toggle('on',S.ess);
+  });
+  $('branch').classList.toggle('off',!!S.lead);
+  $('tally').innerHTML=`<b>${vis}</b>&nbsp;/&nbsp;${tot}`;
 }
-rebuildTeamSelect();
 
-function visiblePeople(t){
-  return t.people.filter(p=>!state.ess||p.ess);
-}
-function match(t){
-  if(state.leader&&t.leader!==state.leader)return false;
-  if(state.team&&t.team!==state.team)return false;
-  if(state.status&&t.status!==state.status)return false;
-  if(state.ess&&!t.people.some(p=>p.ess))return false;
-  return true;
-}
+/* the entrance animation holds opacity via fill-mode; release it so .off can dim */
+let settled=false;
+function settle(){if(settled)return;settled=true;
+  document.querySelectorAll('.anim').forEach(el=>el.classList.remove('anim'));}
+setTimeout(settle,1500);
 
-function render(){
-  const shown=TEAMS.filter(match);
+document.addEventListener('click',e=>{
+  settle();
+  const b=e.target.closest('.f'), g=e.target.closest('.grp'), l=e.target.closest('.lead');
+  if(b){
+    if(b.dataset.lead){S.lead=S.lead===b.dataset.lead?"":b.dataset.lead;S.team=""}
+    else if(b.dataset.stat){S.stat=S.stat===b.dataset.stat?"":b.dataset.stat}
+    else if(b.dataset.ess){S.ess=!S.ess}
+  }
+  else if(l){S.lead=S.lead===l.dataset.lead?"":l.dataset.lead;S.team=""}
+  else if(g){S.team=S.team===g.dataset.team?"":g.dataset.team}
+  else return;
+  apply();
+});
+document.addEventListener('keydown',e=>{
+  settle();
+  if(e.key==='Enter'||e.key===' '){const g=e.target.closest('.grp');
+    if(g){e.preventDefault();S.team=S.team===g.dataset.team?"":g.dataset.team;apply()}}
+  if(e.key==='Escape'){S.lead=S.stat=S.team="";S.ess=false;apply()}
+});
 
-  /* scoreboard counts always reflect leader + essentials scope, not the status filter */
-  const scope=TEAMS.filter(t=>(!state.leader||t.leader===state.leader)&&(!state.team||t.team===state.team)&&(!state.ess||t.people.some(p=>p.ess)));
-  $('score').innerHTML=['ahead','track','behind','ramp'].map(k=>{
-    const n=scope.filter(t=>t.status===k).length;
-    const cls={ahead:'s-ahead',track:'s-track',behind:'s-behind',ramp:'s-ramp'}[k];
-    return `<button class="score-card ${cls} ${state.status===k?'on':''}" data-k="${k}">
-      <div class="score-num">${n}</div><div class="score-lbl">${LBL[k]}</div></button>`;
-  }).join('');
-  document.querySelectorAll('.score-card').forEach(b=>b.onclick=()=>{
-    state.status=state.status===b.dataset.k?"":b.dataset.k;$('fStatus').value=state.status;render();});
+/* tooltip */
+const tip=$('tip');
+document.addEventListener('mouseover',e=>{
+  const n=e.target.closest('.node');
+  if(!n||!n.dataset.note||n.classList.contains('off'))return;
+  tip.textContent=n.dataset.note;
+  const r=n.getBoundingClientRect();
+  tip.style.left=Math.min(r.left,innerWidth-244)+'px';
+  tip.style.top=(r.bottom+7)+'px';
+  tip.classList.add('show');
+});
+document.addEventListener('mouseout',e=>{if(e.target.closest('.node'))tip.classList.remove('show')});
 
-  if(!shown.length){$('teams').innerHTML='<div class="empty">Nothing matches those filters.</div>';return;}
-
-  $('teams').innerHTML=shown.map(t=>{
-    const ppl=visiblePeople(t);
-    return `<div class="team ${t.status}">
-      <div class="team-top">
-        <div><div class="team-name">${t.team}</div><div class="team-lead">${t.leader}</div></div>
-        <div class="pill p-${t.status}">${LBL[t.status]}</div>
-      </div>
-      <div class="metric"><div class="metric-num">${t.metric}</div><div class="metric-sub">${t.metricSub}</div></div>
-      <ul class="evidence">${t.evidence.map(e=>`<li>${e}</li>`).join('')}</ul>
-      ${ppl.length?`<div class="roster">${ppl.map(p=>
-        `<span class="chip ${p.ess?'ess':''}" title="${p.note||''}"><span class="dot ${p.s}"></span>${p.n}${p.ess?' <span class="star">★</span>':''}</span>`
-      ).join('')}</div>`:''}
-    </div>`;
-  }).join('');
-}
-
-$('fLeader').onchange=e=>{state.leader=e.target.value;rebuildTeamSelect();render();};
-$('fTeam').onchange=e=>{state.team=e.target.value;render();};
-$('fStatus').onchange=e=>{state.status=e.target.value;render();};
-$('fEss').onchange=e=>{state.ess=e.target.checked;$('essWrap').classList.toggle('on',state.ess);render();};
-$('clear').onclick=()=>{state.leader=state.team=state.status="";state.ess=false;
-  $('fLeader').value="";$('fStatus').value="";$('fEss').checked=false;$('essWrap').classList.remove('on');
-  rebuildTeamSelect();render();};
-
-render();
+apply();
 </script>
 </body>
 </html>
